@@ -1,4 +1,4 @@
-// Disjoint-set (union-find) - categorize objects (nodes) into diffrent sets and checks if two objects
+// Disjoint-set (union-find) - categorize objects (nodes) into different sets and checks if two objects
 // belong to same sets. Two objects belong to the same group if they have the same representative.
 
 #include <stdio.h>
@@ -98,6 +98,7 @@ void create_union_2(int *reps,int x,int y){
 
 }
 
+// Goal is to balance height of the tree we get when we use a rank. This results in O(log n) complexity
 void create_union_3(int *reps,int *rank,int x,int y){
 	int rx = find_2(reps,x);
 	int ry = find_2(reps,y);
@@ -128,6 +129,7 @@ int find_1(int *reps,int x) {
 // If we store immediate representatives for each vertex we can trace back to main representative
 // Runs at worst O(n) if we get basically create a list but wont happen on average but we can do 
 // better
+// If we use a rank array complexity becomes O(log n)
 int find_2(int *reps,int x) {
 	while (reps[x] != x){
 		x = reps[x];
@@ -161,6 +163,7 @@ void print_reps_rank(int *reps,int *ranks,int size){
 
 int main(void) {
 
+    // union_find_3 is the most practical implementation used in real situations
 	int **arr = make_2(SIZE);
 	create_union_3(arr[0],arr[1],6,8);
 	create_union_3(arr[0],arr[1],3,4);
