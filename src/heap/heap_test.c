@@ -28,7 +28,7 @@ int main(void){
     for(int i = 0; i < 15; i++){
         printf("%d ", my_heap[i]);
     }
-
+    puts("");
     // heapsort
     for (int j = 0; j < 15; j++){
         delete_root(my_heap);

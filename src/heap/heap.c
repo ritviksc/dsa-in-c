@@ -32,6 +32,13 @@ int heap_size;
 int heap_capacity;
 HEAP_PROPERTY property;
 
+void swap(int *arr,int i,int j){
+	int temp = arr[i];
+	arr[i] = arr[j];
+	arr[j] = temp;
+
+}
+
 void heap_config(HEAP_PROPERTY prop, int size){
     heap_size = 0;
     heap_capacity = size;
