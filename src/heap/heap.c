@@ -1,187 +1,143 @@
-/* Heap is a useful data structure for implementing pirority queues. A heap is a tree data structure that follows the heap property.
-   The heap property could be the MAX_HEAP property or MIN_HEAP property. For a max heap, the parent node will always have a greater
-   value than its possible children, while the latter is the opposite - the parents value will be smaller than its children.
-   The most common implementation of a heap is the binary heap, where a node can have upto two children, but k-ary heaps to exits if needed.
+/* Heap is a data structure that is represented as a complete binary tree and follows the heap property.
+   The heap property can be one of the following:
+   Max-heap: value of children nodes are less than the parent
+   Min-heap: value of children nodes are greater than the parent
+   One thing to note is that every node should have a greater or lesser value than it's descendants 
+   depending on the heap property it follows.
 
-   The heap should be filled from top to bottom and left to right. We can implement it using a array or linked list, whatever is favoured.
+   Heapsort is a sorting algorithm that uses a heap to sort sortable elements in either ascending or descending order.
 
-   Complexity of inserting and removing from a (binary) heap:
-   Each layer of a heap can hold up to 2^k elements, starting from layer 0 (root)
-   Total elements in a heap can be written as 2^(k+1) + 1 where k is the number of layers in the heap
-   So total layers in a heap is log n where n is the number of elements.
-   So when we iterate though branch(es) for inserting and remvoing from heap we get complexity O(log n)
+   Using a heap we can implement a priority queue with O(log n) removal and addition. Much better than O(n) time using an 
+   array!
+*/
+
+/* Heap operations defined
+   insert, remove, heapify:
+*/
+
+/* Insert a new element in heap, and mantain heap property by swapping parent child nodes if required.
+   Complexity is O(log n)
 */
 
 #include <stdio.h>
+#include <stdbool.h>
 #include <stdint.h>
-#include <stdlib.h>
 
-// some typedefs
-typedef uint8_t HEAP_TYPE
+typedef uint8_t HEAP_PROPERTY;
 
-// what heap type we need
 #define MIN_HEAP 0
 #define MAX_HEAP 1
 
-HEAP_TYPE heap_type;
-
-int heap_size = 0;
+int heap_size;
 int heap_capacity;
-int vacant_index = 0;
+HEAP_PROPERTY property;
 
-// helper function to swap two elements in a array
-void swap(int* array, int i, int j){
-    if (!array){
-        return;
-    }
-    int temp = array[i];
-    array[i] = array[j];
-    array[j] = temp;
-
-}
-
-// for our sake we will consider nodes to be integers, and return a 'empty' array of n elements with heap type set.
-// To actually make heap use make_heap()
-int* alloc_heap(HEAP_TYPE type, int size){
-    // set heap property
-    heap_type = type;
-
-    heap_size = size;
+void heap_config(HEAP_PROPERTY prop, int size){
+    heap_size = 0;
     heap_capacity = size;
-
-    int *heap = calloc(size,sizeof(int));
-    if (!heap){
-        exit(EXIT_FAILURE);
+    if (prop == MIN_HEAP || prop == MAX_HEAP){
+        property = prop;
+    } else {
+        puts("Invalid heap property!");
     }
 }
 
-// append items to a heap in a sequential fashion
-void add_to_heap(int* heap, int value){
-    if (!heap){
+void insert(int* heap, int value) {
+    if (heap_size >= heap_capacity) {
+        puts("Heap is full!");
+        return;
+    } 
+
+    // Insert the node at the left-most avaliable position and let it up-heap bubble("bubble upwards")
+    int curr_pos = heap_size++;
+    heap[curr_pos] = value;
+
+    if (property == MAX_HEAP){ // Satisfy max-heap property
+        while(curr_pos > 0) {
+            int parent_pos = (curr_pos - 1)/2; // get parent position, and swap until heap property is satisifed.
+            if (heap[curr_pos] > heap[parent_pos]){
+                swap(heap,curr_pos,parent_pos); // swap if parent is less than value we are inserting
+                curr_pos = parent_pos; // Update where the value is now
+            } else {
+                break;
+            }
+        }
+    } else if (property == MIN_HEAP) { // Satisfy min-heap property
+        while(curr_pos > 0) {
+            int parent_pos = (curr_pos - 1)/2; // get parent position, and swap until heap property is satisifed.
+            if (heap[curr_pos] < heap[parent_pos]){
+                swap(heap,curr_pos,parent_pos); // swap if parent is greater than value we are inserting
+                curr_pos = parent_pos; // Update where the value is now
+            } else {
+                break;
+            }
+        }
+    } else { // fallback
+        puts("Invalid heap property!");
+    }
+
+}
+
+/* Get the root and extract it from the heap. We replace it with the last node, and let down-heap bubbling occur to
+   preserve heap property. It can be called extract_max or extract_min depending on the heap property.
+   Complexity is O(log n)
+*/
+void delete_root(int* heap){
+    if (heap_size == 0){
+        puts("Heap is empty, nothing to delete!");
         return;
     }
 
-    if (heap_capacity > 0){
-        if (vacant_index = 0){
-            heap[vacant_index++] = value;
-            heap_capacity--;
-            return;
-        }
-        heap[vacant_index] = value;
-        int curr = vacant_index;
-        if (heap_type = MAX_HEAP){
-            while (curr > 0){
-                int parent = ((curr) - 1 )/ 2;
-                if (heap[curr] > heap[parent]){
-                    swap(heap,curr,parent);
-                }
-                curr = parent;
-            }
-        }
+    // Move last element to root
+    swap(heap, 0, heap_size - 1);
+    heap_size--; // Reduce heap size
 
-        if (heap_type = MIN_HEAP){
-            while (curr > 0){
-                int parent = ((curr) - 1) / 2;
-                if (heap[curr] < heap[parent]){
-                    swap(heap,curr,parent);
-                }
-                curr = parent;
-            }
-        }
+    int curr = 0;
 
-        vacant_index++;
-        heap_capacity--;
+    if (property == MAX_HEAP){
+        while (true){
+            int left = 2 * curr + 1;
+            int right = 2 * curr + 2;
+            int largest = curr;
+
+            if (left < heap_size && heap[left] > heap[largest]){ // check left child
+                largest = left;
+            }
+
+            if (right < heap_size && heap[right] > heap[largest]){ // check right child
+                largest = right;
+            }
+
+            if (largest == curr){
+                break; // heap property satisfied
+            }
+
+            swap(heap, curr, largest);
+            curr = largest;
+        }
+    } else if (property == MIN_HEAP){
+        while (true){
+            int left = 2 * curr + 1;
+            int right = 2 * curr + 2;
+            int largest = curr;
+
+            if (left < heap_size && heap[left] < heap[largest]){ // check left child
+                largest = left;
+            }
+
+            if (right < heap_size && heap[right] < heap[largest]){ // check right child
+                largest = right;
+            }
+
+            if (largest == curr){ 
+                break; // heap property satisfied
+            }
+
+            swap(heap, curr, largest);
+            curr = largest;
+        }
+    } else { // fallback
+        puts("Invalid heap property!");
     }
 }
-
-int extract_root(int* heap, int value){
-    if (!heap){
-        return;
-    }
-
-    if (heap_capacity > 0){
-        int root = heap[0];
-        int last_node = heap[vacant_index - 1];
-        swap(heap,0,vacant_index - 1);
-
-        if (heap_type == MAX_HEAP){
-            int curr = 0;
-            while (curr < heap_size) {
-                int left_child = 2 * curr + 1;
-                int right_child = 2 * curr + 2;
-                int largest = curr;
-
-                if (left_child < heap_size && heap[left_child] > heap[largest]) {
-                    largest = left_child;
-                }
-
-                if (right_child < heap_size && heap[right_child] > heap[largest]) {
-                    largest = right_child;
-                }
-
-                if (largest != curr) {
-                    swap(heap, curr, largest);
-                    curr = largest;
-                } else {
-                    break;
-                }
-            }
-        } else if (heap_type == MIN_HEAP)
-    }
-}
-
-
-// Exchange nodes and in subtree to fulfil heap property.
-void heapify(int* heap, int i, int heap_size){
-    if (i > heap_size || !heap ){
-        return;
-    }
-
-    int left_child = 2*i + 1;
-    int right_child = 2*i + 2;
-    
-    if (heap_type == MAX_HEAP){
-        int largest = i;
-        if (left_child < heap_size && heap[left_child] > heap[largest])
-            largest = left_child;
-        if (right_child < heap_size && heap[right_child] > heap[largest])
-            largest = right_child;
-
-        if (largest != i){
-            swap(heap, i, largest);
-            heapify(heap, largest);
-        }
-    }
-    else if (heap_type == MIN_HEAP){
-        int smallest = i;
-        if (left_child < heap_size && heap[left_child] < heap[smallest])
-            smallest = left_child;
-        if (right_child < heap_size && heap[right_child] < heap[smallest])
-            smallest = right_child;
-
-        if (smallest != i){
-            swap(heap, i, smallest);
-            heapify(heap,smallest);
-        }
-    }
-}
-
-  
-    void heapsort(int* heap, int size){
-        if (!heap){
-            return;
-        }
-
-        for (int i = size / 2 - 1; i >= 0; i--){
-            heapify(heap, i);
-        }
-
-        for (int i = size - 1; i > 0; i--){
-            swap(heap, 0, i);
-            heapify(heap,0,i);
-        }
-    }
-
-    
-
 
