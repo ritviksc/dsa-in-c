@@ -136,6 +136,8 @@ void delete_root(int* heap){
                 largest = right;
             }
 
+
+
             if (largest == curr){ 
                 break; // heap property satisfied
             }
@@ -148,3 +150,67 @@ void delete_root(int* heap){
     }
 }
 
+// Get root of the heap,depending on the property,this could be the max or min node in the heap.
+int get_root(int* heap){
+	if (heap_size > 0 && heap_capacity > 0){
+		return heap[0];
+	}
+
+	return -1;
+}
+
+// Heapify the array after building heap node by node (wont work on non-heap array!)
+void naive_heapsort(int* heap, int size){
+	for (int i = 0; i < size; i++){
+		delete_root(heap);
+	}
+
+}
+
+/* If we have a given array we can heapify it by using the bottom-up heap construction
+ * We start from the last non-leaf node and make sure it's subtree is heapified and move on.
+ * Runs in O(n) time
+ */
+void heapify(int* heap, int index) {
+    if (!heap || index >= heap_size) return;
+
+    int target = index;
+    int left = 2 * index + 1;
+    int right = 2 * index + 2;
+
+    if (property == MAX_HEAP) { 
+        if (left < heap_size && heap[left] > heap[target]) {
+            target = left;
+        }
+
+        if (right < heap_size && heap[right] > heap[target]) {
+            target = right;
+        }
+    } else if (property == MIN_HEAP) { 
+        if (left < heap_size && heap[left] < heap[target]) {
+            target = left;
+        }
+
+        if (right < heap_size && heap[right] < heap[target]) {
+            target = right;
+        }
+    }
+
+    if (target == index) return;
+
+    swap(heap, index, target);
+    heapify(heap, target);
+}
+
+void heapsort(int* heap){
+	for(int i = heap_size/2 - 1; i >= 0; i--){
+		heapify(heap,i); // build heap
+	}
+
+	for (int i = heap_size - 1; i > 0; i--) {
+        	swap(heap, 0, i);       // Move current root to end
+        	heap_size--;            // Reduce heap size
+        	heapify(heap, 0);       // Heapify root
+        }
+
+}
