@@ -202,7 +202,10 @@ void heapify(int* heap, int index) {
     heapify(heap, target);
 }
 
-void heapsort(int* heap){
+void heapsort(int* heap, int size){
+	if (size <= 0){ return;}
+
+	heap_size = size;
 	for(int i = heap_size/2 - 1; i >= 0; i--){
 		heapify(heap,i); // build heap
 	}
