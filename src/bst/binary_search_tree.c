@@ -15,9 +15,9 @@
 /* Node struct that is used in a tree */
 typedef struct Node
 {
-    struct node *parent; // NULL for root
-    struct node *left;
-    struct node *right;
+    struct Node *parent; // NULL for root
+    struct Node *left;
+    struct Node *right;
     int value;
     int size;   // subtree size
     int height; // subtree height
