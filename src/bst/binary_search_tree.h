@@ -5,7 +5,7 @@
 
 typedef struct Node Node;
 /* Wrapper for BST*/
-typedef struct
+typedef struct BST
 {
     Node *root;
     int size;
