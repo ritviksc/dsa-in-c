@@ -301,18 +301,6 @@ Node *predecessor(Node *root, int k)
     return p;
 }
 
-/* Insert new node with value k if it doesn't exist
- */
-void bst_insert(BST *tree, int k)
-{
-    if (!tree || !tree->root)
-    {
-        return;
-    }
-    tree->root = insert_node(tree->root, k);
-    tree->size++;
-}
-
 Node *insert_node(Node *root, int k)
 {
     if (!root)
@@ -355,26 +343,24 @@ Node *insert_node(Node *root, int k)
     return root;
 }
 
+/* Insert new node with value k if it doesn't exist
+ */
+void bst_insert(BST *tree, int k)
+{
+    if (!tree || !tree->root)
+    {
+        return;
+    }
+    tree->root = insert_node(tree->root, k);
+    tree->size++;
+}
+
 /* For deleting a node n from a BST we have three cases to consider
  * Case 1 : No children is easy to tackle just set parent's right or left link to NULL
  * Case 2: With 1 child 'bypass' node n and set child of n to child of n's parent
  * Case 3: With two children, find predecessor or sucessor, and make n's value of that nodes value and free it taking care of it's children
  * Special Case: If we want to delete root, the same steps apply from above
  */
-void bst_delete(BST *tree, int k)
-{
-    if (!tree || !tree->root)
-    {
-        return;
-    }
-    bool deleted = false;
-    tree->root = delete_node(tree->root, k, &deleted);
-    if (deleted)
-    {
-        tree->size--;
-    }
-}
-
 Node *delete_node(Node *root, int k, bool *flag)
 {
     Node *n = search_node(root, k);
@@ -538,6 +524,20 @@ Node *delete_node(Node *root, int k, bool *flag)
     update_tree(ps);
 
     return root;
+}
+
+void bst_delete(BST *tree, int k)
+{
+    if (!tree || !tree->root)
+    {
+        return;
+    }
+    bool deleted = false;
+    tree->root = delete_node(tree->root, k, &deleted);
+    if (deleted)
+    {
+        tree->size--;
+    }
 }
 
 // helper function to free nodes
