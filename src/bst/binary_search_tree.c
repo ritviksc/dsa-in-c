@@ -24,7 +24,7 @@ typedef struct Node
 } Node;
 
 /* Wrapper for BST*/
-typedef struct
+typedef struct BST
 {
     Node *root;
     int size;
@@ -69,8 +69,7 @@ BST *create_bst()
  * All run in O(n) time where n is number of nodes in tree
  */
 
-
- // Helper function for preordering
+// Helper function for preordering
 void preorder_node(Node *node)
 {
     if (!node)
@@ -97,8 +96,8 @@ void postorder_node(Node *node)
     if (!node)
         return;
 
-    preorder_node(node->left);
-    preorder_node(node->right);
+    postorder_node(node->left);
+    postorder_node(node->right);
     printf("%d ", node->value);
 }
 
@@ -118,9 +117,9 @@ void inorder_node(Node *node)
     if (!node)
         return;
 
-    preorder_node(node->left);
+    inorder_node(node->left);
     printf("<Value:%d><Size:%d>:<Height:%d> ", node->value, node->size, node->height);
-    preorder_node(node->right);
+    inorder_node(node->right);
 }
 
 // Inorder ---> Gives sorted order of nodes
@@ -133,14 +132,11 @@ void inorder(const BST *tree)
     inorder_node(tree->root);
 }
 
-
 // Returns node with value k if it exists instead of true/false
-Node *search_node(const BST *tree, int k)
+Node *search_node(Node *root, int k)
 {
-    if (!tree || !tree->root)
-        return NULL;
 
-    Node *curr = tree->root;
+    Node *curr = root;
 
     while (curr)
     {
@@ -159,7 +155,10 @@ Node *search_node(const BST *tree, int k)
  */
 bool search(const BST *tree, int k)
 {
-    return search_node(tree, k) != NULL;
+    if (!tree || !tree->root)
+        return false;
+
+    return search_node(tree->root, k) != NULL;
 }
 
 /* For each node on path from n to root update that nodes size including root using relation:
@@ -276,14 +275,14 @@ Node *successor(Node *root, int k)
 // Else go up using parent pointers until a node is a right child
 Node *predecessor(Node *root, int k)
 {
-    Node *x = findNode(root, k);
+    Node *x = search_node(root, k);
     if (!x)
         return NULL;
 
     // left subtree exists
     if (x->left)
     {
-        node *r = x->left;
+        Node *r = x->left;
         while (r->right)
         {
             r = r->right;

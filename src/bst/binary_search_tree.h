@@ -1,6 +1,8 @@
 #ifndef BINARY_SEARCH_TREE_H
 #define BINARY_SEARCH_TREE_H
 
+#include <stdbool.h>
+
 typedef struct Node Node;
 /* Wrapper for BST*/
 typedef struct
