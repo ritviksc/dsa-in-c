@@ -4,17 +4,18 @@
 
 int main(void)
 {
-    BST *root = create_bst();
-    if (root)
+    BST *tree = create_bst();
+    if (tree->root)
     {
         printf("Incorrect creation!");
-        free_bst(root);
+        free(tree->root);
+        free_bst(tree);
     }
 
     // set root
-    bst_insert(root, 10);
-    bst_insert(root, 10);
-    inorder(root);
-    free_bst(root);
+    bst_insert(tree, 10);
+    bst_insert(tree, 10);
+    inorder(tree);
+    free_bst(tree);
     return EXIT_SUCCESS;
 }
