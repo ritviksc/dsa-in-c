@@ -540,13 +540,6 @@ Node *delete_node(Node *root, int k, bool *flag)
     return root;
 }
 
-// free BST
-void free_bst(BST *tree)
-{
-    free_nodes(tree->root); // postorder free
-    free(tree);
-}
-
 // helper function to free nodes
 void free_nodes(Node *root)
 {
@@ -557,6 +550,13 @@ void free_nodes(Node *root)
     free_nodes(root->left);
     free_nodes(root->right);
     free(root);
+}
+
+// free BST
+void free_bst(BST *tree)
+{
+    free_nodes(tree->root); // postorder free
+    free(tree);
 }
 
 // TODO
