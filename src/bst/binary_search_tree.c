@@ -347,7 +347,7 @@ Node *insert_node(Node *root, int k)
  */
 void bst_insert(BST *tree, int k)
 {
-    if (!tree || !tree->root)
+    if (!tree)
     {
         return;
     }
