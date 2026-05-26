@@ -32,40 +32,43 @@ int recursive_01_knapsack(int element, int weights[], int values[], int max_weig
     return (int)(max(value_with_element, value_without_element));
 }
 
-// assumes weights and values are in sorted order
-int fractional_knapsack(int elements,int weights[], int values[], int max_weight){
-	int max_value = 0;
+// assumes weights and values are in sorted order, wont work as of now since object is not specifed with density
+int fractional_knapsack(int elements, int weights[], int values[], int max_weight)
+{
+    int max_value = 0;
 
-	//calculate value density for each element and put them in a priority queue
-	int *my_heap = malloc(sizeof(int) * elements);
-	heap_config(MAX_HEAP,elements);
+    // calculate value density for each element and put them in a priority queue
+    int *my_heap = malloc(sizeof(int) * elements);
+    heap_config(MAX_HEAP, elements);
 
-	for (int i = 0 ; i < elements; i++){
-		int density = values[i]/weights[i];
-		insert(my_heap,density);
-	}
+    for (int i = 0; i < elements; i++)
+    {
+        int density = values[i] / weights[i];
+        insert(my_heap, density);
+    }
 
-	while (max_weight > 0){
-		int max_density = get_root(my_heap);
-		delete_root(my_heap);
-		if (max_density != 1){
-			if (weights[elements - 1] <= max_weight){
-				max_value += max_density * weights[elements- 1];
-				max_weight -= weights[elements - 1];
-			} else {
-				max_value += max_density * max_weight;
-				max_weight -= max_weight;
-			}
-			elements--;		
-		}
+    while (max_weight > 0)
+    {
+        int max_density = get_root(my_heap);
+        delete_root(my_heap);
+        if (max_density != 1)
+        {
+            if (weights[elements - 1] <= max_weight)
+            {
+                max_value += max_density * weights[elements - 1];
+                max_weight -= weights[elements - 1];
+            }
+            else
+            {
+                max_value += max_density * max_weight;
+                max_weight -= max_weight;
+            }
+            elements--;
+        }
+    }
 
-
-	}
-
-	free(my_heap);
-	return max_value;
-	
-	
+    free(my_heap);
+    return max_value;
 }
 
 int main(void)
@@ -82,8 +85,8 @@ int main(void)
     printf("Maximum value for this 0-1 Knapsack problem is %d\n", optimal);
     */
 
-    int values[] = {120,100,60};
-    int weights[] = {30,20.10};
+    int values[] = {120, 100, 60};
+    int weights[] = {30, 20.10};
 
     int optimal = fractional_knapsack(elements, weights, values, wmax);
     printf("Maximum value for this frac Knapsack problem is %d\n", optimal);
