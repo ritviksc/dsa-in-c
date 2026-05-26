@@ -33,6 +33,7 @@ int recursive_01_knapsack(int element, int weights[], int values[], int max_weig
 }
 
 // assumes weights and values are in sorted order, wont work as of now since object is not specifed with density
+// greedy algorithm
 int fractional_knapsack(int elements, int weights[], int values[], int max_weight)
 {
     int max_value = 0;
