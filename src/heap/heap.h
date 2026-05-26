@@ -10,6 +10,7 @@ typedef uint8_t HEAP_PROPERTY;
 
 void heap_config(HEAP_PROPERTY prop, int size);
 void insert(int* heap, int value);
+int get_root(int* heap);
 void delete_root(int* heap);
 void naive_heapsort(int* heap, int size);
 void heapify(int* heap, int index);
