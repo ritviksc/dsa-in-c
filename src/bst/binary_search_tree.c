@@ -559,5 +559,36 @@ void free_bst(BST *tree)
     free(tree);
 }
 
-// TODO
-// AVL rotations to keep tree balanced
+// ============================================================= UPDATE ========================================================================== //
+/* All these operations are pretty straightfoward (maybe not the deletion process) but they do not take into account the 'degradation' of trees.
+   Some patterns of these operations can skew the tree and we can end up with long branches in the tree and in the worst case end up with a linked
+   list tree .The whole point of using a tree data structure is to take advantage of its faster operations,and
+   we know when a tree in general is 'proper' it is much faster than a linked list.
+   We have two choices to tackle this problem.
+     a.) Global rebuild of the existing tree 
+     b.) Continious rotations after operations
+   In this implementation, you can either choose the BALANCING_TYPE as GLOBAL_BALANCE,ROTATION_BALANCE,or NO_BALANCE
+   (BST instance doesn't need rebalancing).
+   The balancing flags are described in detail below:
+
+   GLOBAL_REBUILD (Scapegoat-style balancing)
+        - Periodically reconstructs parts or the entirety of the tree.
+        - Uses structural criteria (e.g., subtree size imbalance or log(n) height bounds)
+          to determine when a rebuild is necessary.
+        - Provides strong amortized guarantees with simpler local operations.
+        - Suitable for batch-heavy or analysis-friendly workloads.
+
+    ROTATION_BALANCE (AVL-style balancing)
+        - Maintains strict balance constraints using local rotations after insertions and deletions.
+        - Ensures height remains O(log n) at all times.
+        - Provides consistent worst-case performance per operation.
+        - Preferred for real-time or frequently updated datasets.
+
+    NO_BALANCE (Plain BST)
+        - No structural adjustments are performed.
+        - Tree shape depends entirely on insertion order.
+        - Simplest implementation but may degrade to O(n) operations in worst case.
+        - Suitable only when input is known to be well-distributed or balancing is handled externally.
+*/
+
+// NOT IMPLEMENTED YET SOON ...
